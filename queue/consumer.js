@@ -12,7 +12,8 @@ const receiveQueue = async () => {
         // create queue
         await channel.assertQueue(nameQueue, {
             // false mất hàng đợi khi dữ liệu bị crash or cloud crash
-            durable: false
+            // true ko mất dữ liệu khi start lại
+            durable: true
         })
         // receive to queue
         await channel.consume(nameQueue, msg => {

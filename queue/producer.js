@@ -12,10 +12,15 @@ const sendQueue = async ({ msg }) => {
         // create queue
         await channel.assertQueue(nameQueue, {
             // false mất hàng đợi khi dữ liệu bị crash or cloud crash
+            // true ko mất dữ liệu khi start lại
             durable: false
         })
         // send to queue
-        await channel.sendToQueue(nameQueue, Buffer.from(msg)) // Buffer giúp đẩy dữ liệu nhanh hơn, mã hóa dữ liệu thành byte
+        // Buffer giúp đẩy dữ liệu nhanh hơn, mã hóa dữ liệu thành byte
+        await channel.sendToQueue(nameQueue, Buffer.from(msg), {
+            expiration: '10000', // ttl = 10000ms
+            persistent: true // tin nhắn đc xử lý liên tục (lưu vào ổ đĩa or cache)
+        }) 
         // close conn and channel
 
     } catch (err) {
